@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2022, Ben Jilks <benjyjilks@gmail.com>
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
 package com.example.burnercontroller.data
 
 import android.os.Bundle
@@ -27,6 +33,7 @@ private const val INDEX_FAT_100G = 78
 private const val INDEX_SUGARS_100G = 115
 private const val INDEX_SALT_100G = 131
 private const val MIN_ENTRY_COUNT = INDEX_SALT_100G
+
 
 @Entity(tableName = "open_food_facts")
 data class OpenFoodFactsEntry (
