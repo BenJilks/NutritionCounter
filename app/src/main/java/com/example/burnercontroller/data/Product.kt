@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
 import java.security.InvalidParameterException
+import java.time.Instant
 
 @Entity
 data class Product (
@@ -23,6 +24,12 @@ data class Product (
 interface ProductDao {
     @Query("SELECT * FROM product")
     fun getAll(): List<Product>
+
+    @Query("SELECT * FROM product WHERE date = :day")
+    fun onDay(day: Long): List<Product>
+
+    @Query("SELECT date FROM product GROUP BY date")
+    fun daysWithEntries(): List<Long>
 
     @Insert(onConflict = REPLACE)
     fun insert(vararg products: Product)
@@ -50,4 +57,8 @@ fun Product.bundle(): Bundle {
         putLong("date", date)
         putBundle("nutriments", nutriments.bundle())
     }
+}
+
+fun unixTimeStampToDayString(unixTimeStamp: Long): String {
+    return Instant.ofEpochSecond(unixTimeStamp).toString()
 }

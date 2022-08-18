@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     private var database: AppDatabase? = null
     private var isUpdatingDatabase = false
 
-    private lateinit var productList: ProductList
+    private lateinit var productList: ProductListPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,13 +30,6 @@ class MainActivity : AppCompatActivity() {
         val scanButton = findViewById<Button>(R.id.scan_button)
         updateDatabaseButton.setOnClickListener { updateDatabaseButtonClick() }
         scanButton.setOnClickListener { scanButtonClick() }
-
-        productList = ProductList()
-        supportFragmentManager.beginTransaction().apply {
-            // replace(R.id.product_list_view, productList)
-            replace(R.id.product_list_view, ProductListPager())
-            commit()
-        }
     }
 
     override fun onStart() {
@@ -48,8 +41,11 @@ class MainActivity : AppCompatActivity() {
                 .fallbackToDestructiveMigration()
                 .build()
 
-            val executor = Executors.newSingleThreadExecutor()
-            executor.execute { loadSavedProducts() }
+            productList = ProductListPager(database!!)
+            supportFragmentManager.beginTransaction().apply {
+                add(R.id.product_list_view, productList)
+                commitNow()
+            }
         }
 
         if (!isUpdatingDatabase)
@@ -110,15 +106,6 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-    }
-
-    private fun loadSavedProducts() {
-        database?.runInTransaction {
-            val products = database!!.products().getAll()
-            for (product in products) {
-                productList.addProduct(product)
-            }
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

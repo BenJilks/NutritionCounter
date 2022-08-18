@@ -7,7 +7,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.example.burnercontroller"
+        applicationId "com.example.NutritionCounter"
         minSdk 29
         targetSdk 30
         versionCode 1

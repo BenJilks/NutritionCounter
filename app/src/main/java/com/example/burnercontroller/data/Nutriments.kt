@@ -1,14 +1,31 @@
 package com.example.burnercontroller.data
 
 import android.os.Bundle
-import org.json.JSONObject
 
 data class Nutriments(
     val energy: Double?,
     val fat: Double?,
     val sugars: Double?,
     val salt: Double?,
-)
+) {
+
+    override fun toString(): String {
+        return "Energy: $energy kcals, " +
+                "Fat: $fat g, " +
+                "Sugars: $sugars g, " +
+                "Salt: $salt g"
+    }
+
+    fun bundle(): Bundle {
+        return Bundle().apply {
+            bundleValue(this, "energy", energy)
+            bundleValue(this, "fat", fat)
+            bundleValue(this, "sugars", sugars)
+            bundleValue(this, "salt", salt)
+        }
+    }
+
+}
 
 fun readNutriments(data: OpenFoodFactsEntry): Nutriments {
     val energy = data.energyKcal ?: data.energy
@@ -28,15 +45,6 @@ fun unBundleNutriments(bundle: Bundle?): Nutriments {
     val sugars = unbundleValue(bundle, "sugars")
     val salt = unbundleValue(bundle, "salt")
     return Nutriments(energy, fat, sugars, salt)
-}
-
-fun Nutriments.bundle(): Bundle {
-    return Bundle().apply {
-        bundleValue(this, "energy", energy)
-        bundleValue(this, "fat", fat)
-        bundleValue(this, "sugars", sugars)
-        bundleValue(this, "salt", salt)
-    }
 }
 
 private fun bundleValue(bundle: Bundle, name: String, value: Double?) {
