@@ -21,6 +21,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.burnercontroller.data.Product
 import java.net.HttpURLConnection
+import java.net.MalformedURLException
 import java.net.URL
 import java.util.concurrent.Executors
 import javax.net.ssl.HttpsURLConnection
@@ -66,25 +67,33 @@ class ProductView(private val product: Product) : Fragment() {
     }
 
     private fun requestIconImage(handler: Handler) {
-        val url = URL(product.imageUrl)
-        val connection = url.openConnection() as HttpURLConnection
-
-        if (connection.responseCode != HttpsURLConnection.HTTP_OK) {
-            Log.w("APP", "Unable to load '${product.imageUrl}'")
+        if (product.imageUrl == null) {
             return
         }
 
-        val reader = connection.inputStream.buffered()
-        val imageBytes = reader.readBytes()
-        reader.close()
+        try {
+            val url = URL(product.imageUrl)
+            val connection = url.openConnection() as HttpURLConnection
 
-        handler.sendMessage(Message.obtain().apply {
-            data = Bundle().apply { putByteArray("data", imageBytes) }
-        })
+            if (connection.responseCode != HttpsURLConnection.HTTP_OK) {
+                Log.w("APP", "Unable to load '${product.imageUrl}'")
+                return
+            }
 
-        val fileStream = requireContext().openFileOutput(product.barcode, Context.MODE_PRIVATE)
-        fileStream.write(imageBytes)
-        fileStream.close()
+            val reader = connection.inputStream.buffered()
+            val imageBytes = reader.readBytes()
+            reader.close()
+
+            handler.sendMessage(Message.obtain().apply {
+                data = Bundle().apply { putByteArray("data", imageBytes) }
+            })
+
+            val fileStream = requireContext().openFileOutput(product.barcode, Context.MODE_PRIVATE)
+            fileStream.write(imageBytes)
+            fileStream.close()
+        } catch (e: MalformedURLException) {
+            Log.e("APP", e.toString())
+        }
     }
 
     private inner class IconLoadedHandler(looper: Looper) : Handler(looper) {

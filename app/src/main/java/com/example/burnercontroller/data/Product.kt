@@ -19,13 +19,13 @@ data class Product (
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 
-    val barcode: String,
-    val name: String,
-    val imageUrl: String,
+    val barcode: String?,
+    val name: String?,
+    val imageUrl: String?,
     val date: Long,
 
     @Embedded
-    val nutriments: Nutriments,
+    val nutriments: Nutriments?,
 )
 
 @Dao
@@ -63,7 +63,7 @@ fun Product.bundle(): Bundle {
         putString("name", name)
         putString("imageUrl", imageUrl)
         putLong("date", date)
-        putBundle("nutriments", nutriments.bundle())
+        putBundle("nutriments", nutriments?.bundle())
     }
 }
 

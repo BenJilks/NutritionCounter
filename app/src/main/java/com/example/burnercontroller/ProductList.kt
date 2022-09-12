@@ -58,8 +58,8 @@ class ProductList(private var database: AppDatabase,
         }
 
         val totalCalDisplay = view?.findViewById<TextView>(R.id.total_cal_display)
-        totalCalories += product.nutriments.energy ?: 0.0
-        totalCalDisplay?.text = totalCalories.toString() + " kcal"
+        totalCalories += product.nutriments?.energy ?: 0.0
+        totalCalDisplay?.text = totalCalories?.toString() + " kcal"
     }
 
     private inner class AddProductHandler(looper: Looper) : Handler(looper) {
