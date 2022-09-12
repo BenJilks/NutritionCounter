@@ -92,7 +92,6 @@ class MainActivity : AppCompatActivity() {
             isUpdatingDatabase = false
             supportFragmentManager.beginTransaction().apply {
                 remove(progress)
-                commit()
             }
         }
     }
