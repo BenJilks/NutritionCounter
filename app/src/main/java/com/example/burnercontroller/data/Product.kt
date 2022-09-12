@@ -11,6 +11,8 @@ import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
 import java.security.InvalidParameterException
 import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Entity
 data class Product (
@@ -66,5 +68,9 @@ fun Product.bundle(): Bundle {
 }
 
 fun unixTimeStampToDayString(unixTimeStamp: Long): String {
-    return Instant.ofEpochSecond(unixTimeStamp).toString()
+    val formatter = DateTimeFormatter
+        .ofPattern("MMM dd, yyyy")
+        .withZone(ZoneId.systemDefault())
+
+    return formatter.format(Instant.ofEpochSecond(unixTimeStamp))
 }
